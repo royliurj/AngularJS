@@ -7,11 +7,7 @@
 	<script src="angular.js"></script>
 	<script type="text/javascript">
 		var model = {
-			user:'adm',
-			items:[{"action":'222', "done":false},
-{"action":'555', "done":false},
-{"action":'333', "done":false},
-{"action":'666', "done":true}]
+			user:'adm'
 		};
 
 		var todoApp = angular.module('todoApp', []);
@@ -37,6 +33,22 @@
 		todoApp.controller('TodoCtrl', ['$scope','$http', function($scope,$http){
 			$scope.todo = model;
 
+// $http.get("todo.json")
+//   .success(function (response) {
+//   	$scope.names = response.sites;});
+
+			$http({url:"todo.json",method:"GET"}).success(function (data) {
+                var jsonString = angular.toJson(data);                
+               $scope.todo.items = angular.fromJson(jsonString);
+            });
+
+			// $scope.LoadData = function(){				
+			// 	$http.get("todo.json",function(data){
+			// 		$scope.todo.items = data;
+			// 	});				
+			// }
+
+
 			$scope.incompleteCount = function(){
 				var count = 0;
 				angular.forEach($scope.todo.items,function(item){
@@ -55,7 +67,7 @@
 				$scope.todo.items.push({action:actionText, done:false});
 			}
 
-		}])
+		}]);
 	</script>
 </head>
 <body ng-app="todoApp" ng-controller="TodoCtrl">
@@ -92,5 +104,7 @@
 				</label>
 			</div>
 	</div>
+
+	<button class="btn btn-default" ng-click="LoadData()">Load</button>
 </body>
 </html>
